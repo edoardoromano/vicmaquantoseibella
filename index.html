@@ -2,62 +2,482 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiz Zoologia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Esame di Zoologia | Piattaforma Valutazione</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background:#0b0b0b; color:#f2f2f2; }
-    header { padding: 18px 16px; border-bottom: 1px solid #222; position: sticky; top: 0; background:#0b0b0b; }
-    main { max-width: 980px; margin: 0 auto; padding: 16px; }
-    .row { display:flex; gap:12px; flex-wrap: wrap; }
-    button { padding: 10px 12px; border:1px solid #2a2a2a; background:#121212; color:#f2f2f2; border-radius: 10px; cursor:pointer; }
-    button:hover { background:#171717; }
-    .card { border:1px solid #222; background:#101010; border-radius: 14px; padding: 14px; margin: 12px 0; }
-    .qtitle { font-weight: 700; margin-bottom: 10px; }
-    .opt { display:block; padding: 10px; border:1px solid #242424; border-radius: 10px; margin: 8px 0; cursor:pointer; background:#0f0f0f; }
-    .opt input { margin-right: 8px; }
-    .muted { color:#bdbdbd; }
-    .badge { display:inline-block; padding: 2px 8px; border:1px solid #2a2a2a; border-radius:999px; font-size: 12px; color:#cfcfcf; }
-    .good { border-color:#2e7d32; }
-    .bad { border-color:#c62828; }
-    footer { padding: 16px; border-top:1px solid #222; color:#bdbdbd; }
-    code { background:#0f0f0f; padding: 2px 6px; border-radius: 8px; border:1px solid #222; }
+    :root {
+      /* Palette Professionale Dark Mode (Sleek) */
+      --bg-body: #0f172a;       /* Slate 900 */
+      --bg-card: #1e293b;       /* Slate 800 */
+      --bg-header: #0f172a;
+      --border-color: #334155;  /* Slate 700 */
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --primary: #3b82f6;       /* Blue 500 */
+      --primary-hover: #2563eb;
+      
+      --success: #10b981;       /* Emerald 500 */
+      --success-bg: rgba(16, 185, 129, 0.1);
+      
+      --error: #ef4444;         /* Red 500 */
+      --error-bg: rgba(239, 68, 68, 0.1);
+      
+      --radius: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    /* --- Header --- */
+    header {
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    h1 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; }
+    .badge-exam { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-left: 8px;}
+
+    /* --- Progress Bar --- */
+    .progress-track {
+      height: 4px;
+      background: var(--border-color);
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* --- Buttons --- */
+    .btn {
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
+    .btn-outline:hover { border-color: var(--text-main); color: var(--text-main); }
+
+    /* --- Dashboard Recap (Hidden by default) --- */
+    #dashboard {
+      display: none; /* Attivato via JS */
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      animation: slideDown 0.5s ease-out;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.03);
+      padding: 16px;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .stat-val { font-size: 2rem; font-weight: 800; display: block; }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .val-score { color: var(--primary); }
+    .val-correct { color: var(--success); }
+    .val-wrong { color: var(--error); }
+
+    /* --- Question Cards --- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+    
+    .card:hover { border-color: #475569; }
+
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .q-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    /* --- Options (Answers) --- */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opt-label {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.02);
+      position: relative;
+    }
+
+    .opt-label:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: var(--text-muted);
+    }
+
+    /* Nascondiamo il radio button nativo */
+    .opt-label input[type="radio"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-muted);
+      border-radius: 50%;
+      margin-right: 12px;
+      display: grid;
+      place-content: center;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .opt-label input[type="radio"]::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: 0.2s transform ease-in-out;
+      background: var(--primary);
+    }
+
+    .opt-label input[type="radio"]:checked {
+      border-color: var(--primary);
+    }
+    .opt-label input[type="radio"]:checked::before {
+      transform: scale(1);
+    }
+
+    /* Stato selezionato attivo (UI) */
+    .opt-label.selected-ui {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    /* --- Result States (Dopo consegna) --- */
+    .card.reviewed.correct { border-left: 4px solid var(--success); }
+    .card.reviewed.wrong { border-left: 4px solid var(--error); }
+
+    .opt-label.correct-answer {
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: #86efac;
+    }
+    
+    .opt-label.wrong-answer {
+      border-color: var(--error);
+      background: var(--error-bg);
+      color: #fca5a5;
+    }
+
+    /* Feedback badge */
+    .feedback-msg {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      display: none;
+      font-weight: 500;
+    }
+    .card.reviewed .feedback-msg { display: block; }
+    .feedback-msg.is-success { background: var(--success-bg); color: #34d399; }
+    .feedback-msg.is-error { background: var(--error-bg); color: #f87171; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 40px;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Utility */
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
+
 <header>
-  <div class="row" style="align-items:center; justify-content:space-between;">
-    <div>
-      <div style="font-size:18px; font-weight:800;">Quiz Zoologia</div>
-      <div class="muted" id="meta"></div>
+  <div class="container">
+    <div class="header-content">
+      <div style="display:flex; align-items:center;">
+        <h1>Quiz Zoologia <span class="badge-exam">Esame 2026</span></h1>
+      </div>
+      
+      <div style="display:flex; gap:10px;">
+        <button id="btnNew" class="btn btn-outline" onclick="location.reload()">Reset</button>
+        <button id="btnSubmit" class="btn btn-primary" disabled>Consegna Esame</button>
+      </div>
     </div>
-    <div class="row">
-      <button id="btnNew">Nuova prova (20)</button>
-      <button id="btnSubmit" disabled>Consegna</button>
-      <button id="btnDownload">Scarica risultati (JSON)</button>
-      <button id="btnClear">Reset storico</button>
-    </div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressBar"></div>
   </div>
 </header>
 
-<main>
-  <div class="card">
-    <div class="muted">
-      Banco domande: <code>zoologia_questions_v2.json</code> • Risultati: <code>localStorage</code>
-    </div>
-    <div style="margin-top:8px" class="row">
-      <span class="badge" id="badgeTopic">—</span>
-      <span class="badge" id="badgeProgress">0/20 risposte</span>
-      <span class="badge" id="badgeScore">Punteggio: —</span>
+<main class="container" style="margin-top: 32px;">
+
+  <div id="dashboard">
+    <h2 style="margin-top:0;">Riepilogo Esame</h2>
+    <p class="muted">Ecco come è andata. Scorri in basso per vedere i dettagli delle risposte.</p>
+    
+    <div class="stats-grid">
+      <div class="stat-box">
+        <span class="stat-val val-score" id="scoreDisplay">0%</span>
+        <span class="stat-label">Punteggio</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-val val-correct" id="correctCount">0</span>
+        <span class="stat-label">Corrette</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-val val-wrong" id="wrongCount">0</span>
+        <span class="stat-label">Errate</span>
+      </div>
     </div>
   </div>
 
-  <div id="quiz"></div>
+  <div id="quiz-container">
+    </div>
+
 </main>
 
 <footer>
-  Se ospiti su GitHub Pages funziona direttamente. In locale, se apri il file con <code>file://</code> alcuni browser bloccano il caricamento JSON.
+  Sistema Valutazione Zoologia v2.5 • Developed for Exam Prep
 </footer>
 
-<script src="app.js"></script>
+<script>
+  // --- MOCK DATA (Simulazione JSON) ---
+  const questions = [
+    {
+      id: 1,
+      question: "Quale phylum comprende gli animali con corpo segmentato e zampe articolate?",
+      options: ["Mollusca", "Arthropoda", "Annelida", "Cnidaria"],
+      correct: 1 // Indice 0-based (Arthropoda)
+    },
+    {
+      id: 2,
+      question: "Qual è la caratteristica distintiva dei mammiferi?",
+      options: ["Eterotermia", "Scaglie cheratiniche", "Ghiandole mammarie", "Respirazione cutanea"],
+      correct: 2 
+    },
+    {
+      id: 3,
+      question: "In quale classe sono inseriti gli squali?",
+      options: ["Osteitti", "Condritti", "Agnati", "Anfibi"],
+      correct: 1
+    },
+    {
+      id: 4,
+      question: "Quale organulo è responsabile della respirazione cellulare negli animali?",
+      options: ["Cloroplasto", "Ribosoma", "Mitocondrio", "Apparato di Golgi"],
+      correct: 2
+    }
+  ];
+
+  // --- STATE ---
+  const state = {
+    answers: {}, // mappa { questionId: selectedOptionIndex }
+    submitted: false
+  };
+
+  // --- DOM ELEMENTS ---
+  const quizContainer = document.getElementById('quiz-container');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const progressBar = document.getElementById('progressBar');
+  const dashboard = document.getElementById('dashboard');
+
+  // --- INIT ---
+  function initQuiz() {
+    renderQuestions();
+    updateProgress();
+  }
+
+  // --- RENDER ---
+  function renderQuestions() {
+    quizContainer.innerHTML = questions.map((q, index) => `
+      <div class="card" id="card-${q.id}" data-id="${q.id}">
+        <div class="q-meta">Domanda ${index + 1} di ${questions.length}</div>
+        <div class="q-text">${q.question}</div>
+        
+        <div class="options-grid">
+          ${q.options.map((opt, optIndex) => `
+            <label class="opt-label" id="lbl-${q.id}-${optIndex}">
+              <input type="radio" name="q-${q.id}" value="${optIndex}" onchange="handleSelect(${q.id}, ${optIndex})">
+              <span>${opt}</span>
+            </label>
+          `).join('')}
+        </div>
+        
+        <div class="feedback-msg" id="fb-${q.id}"></div>
+      </div>
+    `).join('');
+  }
+
+  // --- LOGIC ---
+  window.handleSelect = (qId, optIndex) => {
+    if (state.submitted) return; // Blocca cambi dopo submit
+
+    state.answers[qId] = optIndex;
+    
+    // UI Update: Highlight selection visually
+    // Rimuovi classe selected dalle altre opzioni della stessa domanda
+    document.querySelectorAll(`#card-${qId} .opt-label`).forEach(el => el.classList.remove('selected-ui'));
+    // Aggiungi classe alla selezionata
+    document.getElementById(`lbl-${qId}-${optIndex}`).classList.add('selected-ui');
+
+    // Abilita submit se tutte le domande hanno risposta (opzionale, qui abilitiamo se almeno una è data o sempre)
+    // Per un esame serio, meglio abilitare submit solo se ha risposto a qualcosa, o sempre.
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = Object.keys(state.answers).length === questions.length ? "Consegna Esame Completo" : "Consegna Esame (Incompleto)";
+    
+    updateProgress();
+  };
+
+  function updateProgress() {
+    const total = questions.length;
+    const answered = Object.keys(state.answers).length;
+    const pct = (answered / total) * 100;
+    progressBar.style.width = `${pct}%`;
+  }
+
+  // --- SUBMISSION & RECAP ---
+  btnSubmit.addEventListener('click', () => {
+    if(!confirm("Sei sicuro di voler consegnare l'esame? Non potrai più modificare le risposte.")) return;
+
+    state.submitted = true;
+    let score = 0;
+    let correctCount = 0;
+
+    // Disabilita UI
+    document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Esame Consegnato";
+
+    // Calcolo e Visualizzazione Dettagliata
+    questions.forEach(q => {
+      const userAns = state.answers[q.id];
+      const card = document.getElementById(`card-${q.id}`);
+      const feedbackEl = document.getElementById(`fb-${q.id}`);
+      
+      card.classList.add('reviewed');
+
+      if (userAns === undefined) {
+        // Non risposta
+        card.classList.add('wrong');
+        feedbackEl.textContent = "Nessuna risposta data.";
+        feedbackEl.classList.add('is-error');
+        // Mostra quella giusta
+        document.getElementById(`lbl-${q.id}-${q.correct}`).classList.add('correct-answer');
+      } 
+      else if (userAns === q.correct) {
+        // Corretta
+        score++;
+        correctCount++;
+        card.classList.add('correct');
+        document.getElementById(`lbl-${q.id}-${userAns}`).classList.add('correct-answer');
+        feedbackEl.textContent = "Risposta corretta!";
+        feedbackEl.classList.add('is-success');
+      } 
+      else {
+        // Errata
+        card.classList.add('wrong');
+        document.getElementById(`lbl-${q.id}-${userAns}`).classList.add('wrong-answer'); // La tua errata
+        document.getElementById(`lbl-${q.id}-${q.correct}`).classList.add('correct-answer'); // Quella giusta
+        feedbackEl.textContent = "Risposta errata. Vedi la correzione sopra.";
+        feedbackEl.classList.add('is-error');
+      }
+    });
+
+    // Aggiorna Dashboard
+    const finalScorePct = Math.round((score / questions.length) * 100);
+    document.getElementById('scoreDisplay').textContent = `${finalScorePct}%`;
+    document.getElementById('correctCount').textContent = correctCount;
+    document.getElementById('wrongCount').textContent = questions.length - correctCount;
+
+    // Mostra Dashboard e scrolla in alto
+    dashboard.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Start
+  initQuiz();
+</script>
 </body>
 </html>
