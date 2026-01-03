@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Zoologia</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background:#0b0b0b; color:#f2f2f2; }
+    header { padding: 18px 16px; border-bottom: 1px solid #222; position: sticky; top: 0; background:#0b0b0b; }
+    main { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .row { display:flex; gap:12px; flex-wrap: wrap; }
+    button { padding: 10px 12px; border:1px solid #2a2a2a; background:#121212; color:#f2f2f2; border-radius: 10px; cursor:pointer; }
+    button:hover { background:#171717; }
+    .card { border:1px solid #222; background:#101010; border-radius: 14px; padding: 14px; margin: 12px 0; }
+    .qtitle { font-weight: 700; margin-bottom: 10px; }
+    .opt { display:block; padding: 10px; border:1px solid #242424; border-radius: 10px; margin: 8px 0; cursor:pointer; background:#0f0f0f; }
+    .opt input { margin-right: 8px; }
+    .muted { color:#bdbdbd; }
+    .badge { display:inline-block; padding: 2px 8px; border:1px solid #2a2a2a; border-radius:999px; font-size: 12px; color:#cfcfcf; }
+    .good { border-color:#2e7d32; }
+    .bad { border-color:#c62828; }
+    footer { padding: 16px; border-top:1px solid #222; color:#bdbdbd; }
+    code { background:#0f0f0f; padding: 2px 6px; border-radius: 8px; border:1px solid #222; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="row" style="align-items:center; justify-content:space-between;">
+    <div>
+      <div style="font-size:18px; font-weight:800;">Quiz Zoologia</div>
+      <div class="muted" id="meta"></div>
+    </div>
+    <div class="row">
+      <button id="btnNew">Nuova prova (20)</button>
+      <button id="btnSubmit" disabled>Consegna</button>
+      <button id="btnDownload">Scarica risultati (JSON)</button>
+      <button id="btnClear">Reset storico</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="muted">
+      Banco domande: <code>zoologia_questions_v2.json</code> • Risultati: <code>localStorage</code>
+    </div>
+    <div style="margin-top:8px" class="row">
+      <span class="badge" id="badgeTopic">—</span>
+      <span class="badge" id="badgeProgress">0/20 risposte</span>
+      <span class="badge" id="badgeScore">Punteggio: —</span>
+    </div>
+  </div>
+
+  <div id="quiz"></div>
+</main>
+
+<footer>
+  Se ospiti su GitHub Pages funziona direttamente. In locale, se apri il file con <code>file://</code> alcuni browser bloccano il caricamento JSON.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
