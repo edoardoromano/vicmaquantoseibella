@@ -2,482 +2,155 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Esame di Zoologia | Piattaforma Valutazione</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Esame di Zoologia</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
-      /* Palette Professionale Dark Mode (Sleek) */
-      --bg-body: #0f172a;       /* Slate 900 */
-      --bg-card: #1e293b;       /* Slate 800 */
-      --bg-header: #0f172a;
-      --border-color: #334155;  /* Slate 700 */
-      
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      
-      --primary: #3b82f6;       /* Blue 500 */
-      --primary-hover: #2563eb;
-      
-      --success: #10b981;       /* Emerald 500 */
-      --success-bg: rgba(16, 185, 129, 0.1);
-      
-      --error: #ef4444;         /* Red 500 */
-      --error-bg: rgba(239, 68, 68, 0.1);
-      
+      --primary: #0056D2; /* Coursera Blue */
+      --primary-dark: #00419e;
+      --bg-body: #F5F7FA;
+      --bg-card: #FFFFFF;
+      --text-main: #1F1F1F;
+      --text-muted: #636363;
+      --border: #E0E0E0;
+      --success: #1f8332;
+      --error: #c21c24;
       --radius: 8px;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background: var(--bg-body);
-      color: var(--text-main);
-      line-height: 1.5;
-    }
-
-    /* --- Header --- */
-    header {
-      background: var(--bg-header);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 16px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    h1 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; }
-    .badge-exam { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-left: 8px;}
-
-    /* --- Progress Bar --- */
-    .progress-track {
-      height: 4px;
-      background: var(--border-color);
-      width: 100%;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--primary);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    /* --- Buttons --- */
-    .btn {
-      padding: 10px 16px;
-      border-radius: var(--radius);
-      border: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background: var(--bg-body); color: var(--text-main); line-height: 1.5; }
     
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+    /* HEADER */
+    header { background: #fff; border-bottom: 1px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .brand { font-weight: 700; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+    .header-actions button { margin-left: 8px; font-size: 13px; }
 
-    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
-    .btn-outline:hover { border-color: var(--text-main); color: var(--text-main); }
-
-    /* --- Dashboard Recap (Hidden by default) --- */
-    #dashboard {
-      display: none; /* Attivato via JS */
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 32px;
-      animation: slideDown 0.5s ease-out;
-    }
+    /* LAYOUT GRID */
+    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; max-width: 1200px; margin: 24px auto; padding: 0 16px; align-items: start; }
     
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
+    /* SIDEBAR (QUESTION NAVIGATOR) */
+    .sidebar { background: #fff; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); position: sticky; top: 88px; max-height: calc(100vh - 100px); overflow-y: auto; }
+    .sidebar-title { font-weight: 600; margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .q-dot { 
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
+      border: 1px solid var(--border); border-radius: 4px; font-size: 12px; font-weight: 600; 
+      cursor: pointer; transition: all 0.2s; color: var(--text-muted);
     }
-    .stat-box {
-      background: rgba(255,255,255,0.03);
-      padding: 16px;
-      border-radius: var(--radius);
-      text-align: center;
-    }
-    .stat-val { font-size: 2rem; font-weight: 800; display: block; }
-    .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .val-score { color: var(--primary); }
-    .val-correct { color: var(--success); }
-    .val-wrong { color: var(--error); }
+    .q-dot:hover { border-color: var(--primary); color: var(--primary); }
+    .q-dot.filled { background: #E3F2FD; border-color: var(--primary); color: var(--primary); }
+    .q-dot.correct { background: var(--success); border-color: var(--success); color: #fff; }
+    .q-dot.wrong { background: var(--error); border-color: var(--error); color: #fff; }
 
-    /* --- Question Cards --- */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 24px;
-      transition: border-color 0.2s;
-    }
+    /* MAIN CONTENT */
+    .main-col { min-width: 0; }
     
-    .card:hover { border-color: #475569; }
+    /* RECAP DASHBOARD (Hidden by default) */
+    #result-dashboard { display: none; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; border-left: 5px solid var(--primary); }
+    .score-big { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+    .score-meta { color: var(--text-muted); font-size: 14px; }
+    .progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-top: 12px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 1s ease; }
 
-    .q-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .q-text {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: var(--text-main);
-    }
-
-    /* --- Options (Answers) --- */
-    .options-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .opt-label {
-      display: flex;
-      align-items: center;
-      padding: 14px 16px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all 0.2s;
-      background: rgba(255,255,255,0.02);
-      position: relative;
-    }
-
-    .opt-label:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: var(--text-muted);
-    }
-
-    /* Nascondiamo il radio button nativo */
-    .opt-label input[type="radio"] {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--text-muted);
-      border-radius: 50%;
-      margin-right: 12px;
-      display: grid;
-      place-content: center;
-      transition: 0.2s;
-      flex-shrink: 0;
-    }
-
-    .opt-label input[type="radio"]::before {
-      content: "";
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      transform: scale(0);
-      transition: 0.2s transform ease-in-out;
-      background: var(--primary);
-    }
-
-    .opt-label input[type="radio"]:checked {
-      border-color: var(--primary);
-    }
-    .opt-label input[type="radio"]:checked::before {
-      transform: scale(1);
-    }
-
-    /* Stato selezionato attivo (UI) */
-    .opt-label.selected-ui {
-      border-color: var(--primary);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    /* --- Result States (Dopo consegna) --- */
-    .card.reviewed.correct { border-left: 4px solid var(--success); }
-    .card.reviewed.wrong { border-left: 4px solid var(--error); }
-
-    .opt-label.correct-answer {
-      border-color: var(--success);
-      background: var(--success-bg);
-      color: #86efac;
-    }
+    /* QUESTION CARD */
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: box-shadow 0.2s; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card.wrong-card { border-left: 4px solid var(--error); }
+    .card.correct-card { border-left: 4px solid var(--success); }
     
-    .opt-label.wrong-answer {
-      border-color: var(--error);
-      background: var(--error-bg);
-      color: #fca5a5;
-    }
+    .q-header { display: flex; justify-content: space-between; margin-bottom: 16px; align-items: flex-start; }
+    .q-text { font-size: 16px; font-weight: 600; line-height: 1.5; color: var(--text-main); }
+    .q-badge { background: #f0f0f0; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; margin-left: 12px; }
 
-    /* Feedback badge */
-    .feedback-msg {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: var(--radius);
-      font-size: 0.9rem;
-      display: none;
-      font-weight: 500;
-    }
-    .card.reviewed .feedback-msg { display: block; }
-    .feedback-msg.is-success { background: var(--success-bg); color: #34d399; }
-    .feedback-msg.is-error { background: var(--error-bg); color: #f87171; }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 40px 0;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border-color);
-      margin-top: 40px;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* OPTIONS */
+    .opt-label { display: flex; align-items: center; padding: 12px 16px; border: 2px solid transparent; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; position: relative; }
+    .opt-label:hover { background: #f9f9f9; border-color: #bbb; }
+    .opt-label.selected { border-color: var(--primary); background: #f0f7ff; box-shadow: 0 0 0 1px var(--primary); }
     
-    /* Utility */
-    .hidden { display: none !important; }
+    /* Hidden Radio but accessible */
+    .opt-label input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .radio-circle { width: 18px; height: 18px; border: 2px solid #ccc; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .opt-label input:checked + .radio-circle { border-color: var(--primary); }
+    .opt-label input:checked + .radio-circle::after { content: ''; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; }
+
+    /* GRADING STYLES */
+    .opt-label.g-correct { background-color: #e6f4ea !important; border-color: var(--success) !important; color: #0d5220; }
+    .opt-label.g-wrong { background-color: #fce8e9 !important; border-color: var(--error) !important; opacity: 0.7; }
+    
+    .explanation-box { margin-top: 16px; padding: 16px; background: #F8F9FA; border-radius: 6px; font-size: 14px; border-left: 3px solid var(--text-muted); color: #444; display: none; }
+    .explanation-box strong { display: block; margin-bottom: 4px; color: var(--text-main); }
+
+    /* BUTTONS */
+    .btn { padding: 10px 20px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+    .btn-outline:hover { background: #f5f5f5; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; /* Can be toggleable in V2 */ }
+      header { padding: 0 16px; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="container">
-    <div class="header-content">
-      <div style="display:flex; align-items:center;">
-        <h1>Quiz Zoologia <span class="badge-exam">Esame 2026</span></h1>
-      </div>
-      
-      <div style="display:flex; gap:10px;">
-        <button id="btnNew" class="btn btn-outline" onclick="location.reload()">Reset</button>
-        <button id="btnSubmit" class="btn btn-primary" disabled>Consegna Esame</button>
-      </div>
-    </div>
+  <div class="brand">
+    <span>🏛️ UniZoo Quiz</span>
   </div>
-  <div class="progress-track">
-    <div class="progress-fill" id="progressBar"></div>
+  <div class="header-actions">
+    <button id="btnNew" class="btn btn-outline">Nuovo Esame</button>
+    <button id="btnClear" class="btn btn-outline" title="Reset storico">Reset</button>
+    <button id="btnDownload" class="btn btn-outline">⇩ JSON</button>
   </div>
 </header>
 
-<main class="container" style="margin-top: 32px;">
+<div class="layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-title">Navigazione</div>
+    <div id="qGrid" class="q-grid">
+      </div>
+    <div style="margin-top: 24px; border-top: 1px solid #eee; padding-top: 16px;">
+      <div class="sidebar-title">Stato</div>
+      <div id="statusText" style="font-size:13px; color:#666; margin-bottom:12px;">0/20 Risposte</div>
+      <button id="btnSubmit" class="btn btn-primary" style="width:100%" disabled>Consegna Esame</button>
+    </div>
+  </aside>
 
-  <div id="dashboard">
-    <h2 style="margin-top:0;">Riepilogo Esame</h2>
-    <p class="muted">Ecco come è andata. Scorri in basso per vedere i dettagli delle risposte.</p>
+  <main class="main-col">
     
-    <div class="stats-grid">
-      <div class="stat-box">
-        <span class="stat-val val-score" id="scoreDisplay">0%</span>
-        <span class="stat-label">Punteggio</span>
+    <div id="result-dashboard">
+      <h2 style="margin:0 0 16px 0;">Risultati Esame</h2>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <div class="score-big" id="scoreDisplay">--/20</div>
+          <div class="score-meta" id="scoreMsg">Punteggio finale</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:24px; font-weight:700;" id="percentageDisplay">--%</div>
+        </div>
       </div>
-      <div class="stat-box">
-        <span class="stat-val val-correct" id="correctCount">0</span>
-        <span class="stat-label">Corrette</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-val val-wrong" id="wrongCount">0</span>
-        <span class="stat-label">Errate</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="scoreBar"></div>
       </div>
     </div>
-  </div>
 
-  <div id="quiz-container">
-    </div>
+    <div id="quiz"></div>
+  </main>
 
-</main>
+</div>
 
-<footer>
-  Sistema Valutazione Zoologia v2.5 • Developed for Exam Prep
+<footer style="text-align:center; padding: 40px; color:#999; font-size:12px;">
+  Simulazione accademica a scopo didattico.
 </footer>
 
-<script>
-  // --- MOCK DATA (Simulazione JSON) ---
-  const questions = [
-    {
-      id: 1,
-      question: "Quale phylum comprende gli animali con corpo segmentato e zampe articolate?",
-      options: ["Mollusca", "Arthropoda", "Annelida", "Cnidaria"],
-      correct: 1 // Indice 0-based (Arthropoda)
-    },
-    {
-      id: 2,
-      question: "Qual è la caratteristica distintiva dei mammiferi?",
-      options: ["Eterotermia", "Scaglie cheratiniche", "Ghiandole mammarie", "Respirazione cutanea"],
-      correct: 2 
-    },
-    {
-      id: 3,
-      question: "In quale classe sono inseriti gli squali?",
-      options: ["Osteitti", "Condritti", "Agnati", "Anfibi"],
-      correct: 1
-    },
-    {
-      id: 4,
-      question: "Quale organulo è responsabile della respirazione cellulare negli animali?",
-      options: ["Cloroplasto", "Ribosoma", "Mitocondrio", "Apparato di Golgi"],
-      correct: 2
-    }
-  ];
-
-  // --- STATE ---
-  const state = {
-    answers: {}, // mappa { questionId: selectedOptionIndex }
-    submitted: false
-  };
-
-  // --- DOM ELEMENTS ---
-  const quizContainer = document.getElementById('quiz-container');
-  const btnSubmit = document.getElementById('btnSubmit');
-  const progressBar = document.getElementById('progressBar');
-  const dashboard = document.getElementById('dashboard');
-
-  // --- INIT ---
-  function initQuiz() {
-    renderQuestions();
-    updateProgress();
-  }
-
-  // --- RENDER ---
-  function renderQuestions() {
-    quizContainer.innerHTML = questions.map((q, index) => `
-      <div class="card" id="card-${q.id}" data-id="${q.id}">
-        <div class="q-meta">Domanda ${index + 1} di ${questions.length}</div>
-        <div class="q-text">${q.question}</div>
-        
-        <div class="options-grid">
-          ${q.options.map((opt, optIndex) => `
-            <label class="opt-label" id="lbl-${q.id}-${optIndex}">
-              <input type="radio" name="q-${q.id}" value="${optIndex}" onchange="handleSelect(${q.id}, ${optIndex})">
-              <span>${opt}</span>
-            </label>
-          `).join('')}
-        </div>
-        
-        <div class="feedback-msg" id="fb-${q.id}"></div>
-      </div>
-    `).join('');
-  }
-
-  // --- LOGIC ---
-  window.handleSelect = (qId, optIndex) => {
-    if (state.submitted) return; // Blocca cambi dopo submit
-
-    state.answers[qId] = optIndex;
-    
-    // UI Update: Highlight selection visually
-    // Rimuovi classe selected dalle altre opzioni della stessa domanda
-    document.querySelectorAll(`#card-${qId} .opt-label`).forEach(el => el.classList.remove('selected-ui'));
-    // Aggiungi classe alla selezionata
-    document.getElementById(`lbl-${qId}-${optIndex}`).classList.add('selected-ui');
-
-    // Abilita submit se tutte le domande hanno risposta (opzionale, qui abilitiamo se almeno una è data o sempre)
-    // Per un esame serio, meglio abilitare submit solo se ha risposto a qualcosa, o sempre.
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = Object.keys(state.answers).length === questions.length ? "Consegna Esame Completo" : "Consegna Esame (Incompleto)";
-    
-    updateProgress();
-  };
-
-  function updateProgress() {
-    const total = questions.length;
-    const answered = Object.keys(state.answers).length;
-    const pct = (answered / total) * 100;
-    progressBar.style.width = `${pct}%`;
-  }
-
-  // --- SUBMISSION & RECAP ---
-  btnSubmit.addEventListener('click', () => {
-    if(!confirm("Sei sicuro di voler consegnare l'esame? Non potrai più modificare le risposte.")) return;
-
-    state.submitted = true;
-    let score = 0;
-    let correctCount = 0;
-
-    // Disabilita UI
-    document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = "Esame Consegnato";
-
-    // Calcolo e Visualizzazione Dettagliata
-    questions.forEach(q => {
-      const userAns = state.answers[q.id];
-      const card = document.getElementById(`card-${q.id}`);
-      const feedbackEl = document.getElementById(`fb-${q.id}`);
-      
-      card.classList.add('reviewed');
-
-      if (userAns === undefined) {
-        // Non risposta
-        card.classList.add('wrong');
-        feedbackEl.textContent = "Nessuna risposta data.";
-        feedbackEl.classList.add('is-error');
-        // Mostra quella giusta
-        document.getElementById(`lbl-${q.id}-${q.correct}`).classList.add('correct-answer');
-      } 
-      else if (userAns === q.correct) {
-        // Corretta
-        score++;
-        correctCount++;
-        card.classList.add('correct');
-        document.getElementById(`lbl-${q.id}-${userAns}`).classList.add('correct-answer');
-        feedbackEl.textContent = "Risposta corretta!";
-        feedbackEl.classList.add('is-success');
-      } 
-      else {
-        // Errata
-        card.classList.add('wrong');
-        document.getElementById(`lbl-${q.id}-${userAns}`).classList.add('wrong-answer'); // La tua errata
-        document.getElementById(`lbl-${q.id}-${q.correct}`).classList.add('correct-answer'); // Quella giusta
-        feedbackEl.textContent = "Risposta errata. Vedi la correzione sopra.";
-        feedbackEl.classList.add('is-error');
-      }
-    });
-
-    // Aggiorna Dashboard
-    const finalScorePct = Math.round((score / questions.length) * 100);
-    document.getElementById('scoreDisplay').textContent = `${finalScorePct}%`;
-    document.getElementById('correctCount').textContent = correctCount;
-    document.getElementById('wrongCount').textContent = questions.length - correctCount;
-
-    // Mostra Dashboard e scrolla in alto
-    dashboard.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  // Start
-  initQuiz();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
